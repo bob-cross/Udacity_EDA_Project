@@ -10,7 +10,7 @@ knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/')
 ```
 I chose the Red Wine set for my EDA project. The goal of the exploratory analysis is to determine which chemical characteristics in the data set have the most effect on the quality of the wine.
 
-```{r echo=FALSE, messages=FALSE, warning=FALSE}
+```{r echo=FALSE, messages=FALSE, warning=FALSE, include=FALSE}
 # Load all of the packages to be used in this analysis.
 
 # The parameterhe code from displaying in the HTML file once the file is knitted together. Throughout the analysis "echo" will be set to FALSE unless it is specifically desired to have the code displayed to aid in understanding or describing the analysis.
@@ -38,7 +38,7 @@ redwine$x <- NULL
 
 ```{r echo=FALSE}
 
-redwine$quality.f <- factor(redwine$quality, levels = c("3", "4", "5", "6", "7", "8", "9"))
+redwine$quality.f <- as.factor(redwine$quality)
 redwine$quality.f <- ordered(redwine$quality, levels = c("3", "4", "5", "6", "7", "8", "9"))
 
 ```
@@ -428,150 +428,66 @@ The initial Bivariate relationship I wanted to look at was that of the various v
 Again, these plots are shown in the name order as presented in the univariate section.
 
 The first variable comparison is with fixed acidity. Visually, the fixed acidity shows minimal fluctuation across the quality spectrum.
+
 ```{r echo=FALSE}
-ggplot(aes(factor(quality), 
-            fixed.acidity), 
+create_plot <- function(variable) {
+  return(ggplot(aes_string("quality.f",variable),
         data = redwine) +
-  geom_jitter( alpha = .3)  +
-  geom_boxplot( alpha = .5,color = 'blue')+
-  stat_summary(fun.y = "mean", 
+          geom_jitter( alpha = .3) +
+          geom_boxplot( alpha = .5,color = 'blue') +
+          stat_summary(fun.y = "mean", 
                geom = "point", 
                color = "red", 
                shape = 8, 
-               size = 4)
+               size = 4))}
 ```
+```{r}
+create_plot('fixed.acidity')
+```
+
+
 Next, we have volatile acidity plotted by quality score. There is a clear indication that there are lower levels of volatile acidiity in higher quality wines. This is not suprising in that as we noted earlier volatile acidity contributes to the unpleasant taste in wine.
 ```{r echo=FALSE}
-fp3b <-ggplot(aes(factor(quality), 
-            volatile.acidity), 
-        data = redwine) +
-  geom_jitter( alpha = .3)  +
-  geom_boxplot( alpha = .5,color = 'blue')+
-  stat_summary(fun.y = "mean", 
-               geom = "point", 
-               color = "red", 
-               shape = 8, 
-               size = 4)
+fp3b <-create_plot('volatile.acidity')
 fp3b
 ```
 Next, we look at citric acid relative to quality. There is a strong positive relationship between increased levels of citric acid and quality. This is likely 'the grapes shining through and showing their distintness in the wine'.
 ```{r echo=FALSE}
-fp3a <-ggplot(aes(factor(quality), 
-            citric.acid), 
-        data = redwine) +
-  geom_jitter( alpha = .3)  +
-  geom_boxplot( alpha = .5,color = 'blue')+
-  stat_summary(fun.y = "mean", 
-               geom = "point", 
-               color = "red", 
-               shape = 8, 
-               size = 4)
+fp3a <- create_plot('citric.acid')
 fp3a
 ```
 Here we have residual sugar vs quality score.
 ```{r echo=FALSE}
-ggplot(aes(factor(quality), 
-            residual.sugar), 
-        data = redwine) +
-  geom_jitter( alpha = .3)  +
-  geom_boxplot( alpha = .5,color = 'blue')+
-  stat_summary(fun.y = "mean", 
-               geom = "point", 
-               color = "red", 
-               shape = 8, 
-               size = 4)
+create_plot('residual.sugar')
 ```
 The next relationship is with chlorides.
 ```{r echo=FALSE}
-ggplot(aes(factor(quality), 
-            chlorides),
-        data = redwine) +
-  geom_jitter( alpha = .3)  +
-  geom_boxplot( alpha = .5,color = 'blue')+
-  stat_summary(fun.y = "mean", 
-               geom = "point", 
-               color = "red", 
-               shape = 8, 
-               size = 4)
+create_plot('chlorides')
 ```
 Free sulfur dioxide relative to quality. Interestingly, the highest quality and lowest quality rated wines have similar and relatively lower free sulfur dioxide content.
 ```{r echo=FALSE}
-ggplot(aes(factor(quality), 
-            free.sulfur.dioxide), 
-        data = redwine) +
-  geom_jitter( alpha = .3)  +
-  geom_boxplot( alpha = .5,color = 'blue')+
-  stat_summary(fun.y = "mean", 
-               geom = "point", 
-               color = "red", 
-               shape = 8, 
-               size = 4)
+create_plot('free.sulfur.dioxide')
 ```
 Total sulfur dioxide relative to quality rating. This variable shows a normal mean distribution over quality rating.
 ```{r echo=FALSE}
-ggplot(aes(factor(quality), 
-            total.sulfur.dioxide), 
-        data = redwine) +
-  geom_jitter( alpha = .3)  +
-  geom_boxplot( alpha = .5,color = 'blue')+
-  stat_summary(fun.y = "mean", 
-               geom = "point", 
-               color = "red", 
-               shape = 8, 
-               size = 4)
+create_plot('total.sulfur.dioxide')
 ```
 Next is the wines density relative to quality score. The mean value of a wines density decreases as the quality value improves.
 ```{r echo=FALSE}
-ggplot(aes(factor(quality), 
-            density), 
-        data = redwine) +
-  geom_jitter( alpha = .3)  +
-  geom_boxplot( alpha = .5,color = 'blue')+
-  stat_summary(fun.y = "mean", 
-               geom = "point", 
-               color = "red", 
-               shape = 8, 
-               size = 4)
+create_plot('density')
 ```
 pH relative to quality score.
 ```{r echo=FALSE}
-ggplot(aes(factor(quality), 
-            pH), 
-        data = redwine) +
-  geom_jitter( alpha = .3)  +
-  geom_boxplot( alpha = .5,color = 'blue')+
-  stat_summary(fun.y = "mean", 
-               geom = "point", 
-               color = "red", 
-               shape = 8, 
-               size = 4)
+create_plot('pH')
 ```
 Next we look at sulphates relative to quality rating. There is a noticable increase in the mean sulphate level as the quality rating improves. Sulphates are often added to wine to help preserve the wines' taste.
 ```{r echo=FALSE}
-fp2b <- ggplot(aes(factor(quality), 
-            sulphates), 
-        data = redwine) +
-  geom_jitter( alpha = .3)  +
-  geom_boxplot( alpha = .5,color = 'blue')+
-  stat_summary(fun.y = "mean", 
-               geom = "point", 
-               color = "red", 
-               shape = 8, 
-               size = 4)
+fp2b <- create_plot('sulphates')
 fp2b
 ```
 Finally, we look at alcohol relative to quality rating. There is a clear indication that the higher the alcohol level the higher the quality rating.
 ```{r echo=FALSE}
-fp2a <- ggplot(aes(factor(quality), 
-            alcohol), 
-        data = redwine) +
-  geom_jitter( alpha = .3)  +
-  geom_boxplot( alpha = .5,color = 'blue')+
-  stat_summary(fun.y = "mean", 
-               geom = "point", 
-               color = "red", 
-               shape = 8, 
-               size = 4)
+fp2a <- create_plot('alcohol')
 fp2a
 ```
 
@@ -667,8 +583,8 @@ ggplot(aes(x = alcohol, y = sulphates/volatile.acidity), data = redwine) +
   geom_point(aes(color = quality.f)) +
   xlab('alcohol, % by volume') +
   ylab('sulphates/volatile acidity') +
-  scale_y_log10(0,5,1) +
-  scale_x_log10(0,25,5) +
+  scale_y_log10() +
+  scale_x_log10() +
   scale_color_brewer(type = 'seq', palette = 'YlOrBr') +
   geom_smooth(method = "lm", se = FALSE,size=1) +
   ggtitle('Alcohol vs. Sulphates/Volatile.acidity in Red Wines') +
@@ -679,8 +595,6 @@ ggplot(aes(x = alcohol, y = citric.acid/volatile.acidity), data = redwine) +
   geom_point(aes(color = quality.f)) +
   xlab('alcohol, % by volume') +
   ylab('citric acid/volatile acidity') +
-  scale_y_log10() +
-  scale_x_log10() +
   scale_color_brewer(type = 'seq', palette = 'YlOrBr') +
   geom_smooth(method = "lm", se = FALSE,size=1) +
   ggtitle('Alcohol vs citric acid/Volatile acidity in Red Wines') +
@@ -692,6 +606,7 @@ ggplot(aes(x = quality, y = residual.sugar/density), data = redwine) +
   geom_boxplot(aes(color = quality.f)) +
   xlab('quality') +
   ylab('residual sugar/density') +
+  coord_cartesian(ylim = c(0,8)) +
   scale_color_brewer(type = 'seq', palette = 'YlOrBr') +
   ggtitle('Quality vs Residual Sugar / Density in Red Wines - My Preference') +
   theme(text = element_text(size = 8))
@@ -755,7 +670,8 @@ grid.arrange(fp3a, fp3b, ncol=2)
 ```
 Reflections
 
-When starting to examine the dataset, I excited by the numerous components of wine in order to determine which had the most differentiating effect. As I got into the analysis it was interesting to see how concentrated and or disburesed each component was across the dataset. The direction of the analysis was shaped by the different variables effect based on the quality rating; this seemed to be the most natural approach given the variables. It may be interesting to expand the dataset toinclude a price variable and use price as the primary comparison variable. It may also be interesting in an expanded dataset to look at the age of the wine relative to such components as the sulphate content. It would also be interesting to examine soil content from where the grapes originated relative to their citric acid and volatile acid content. 
+When starting to examine the dataset, I excited by the numerous components of wine in order to determine which had the most differentiating effect. As I got into the analysis it was interesting to see how concentrated and or disburesed each component was across the dataset. The direction of the analysis was shaped by the different variables effect based on the quality rating; this seemed to be the most natural approach given the variables. It may be interesting to expand the dataset to include a price variable and use price as the primary comparison variable. It may also be interesting in an expanded dataset to look at the age of the wine relative to such components as the sulphate content. It would also be interesting to examine soil content from where the grapes originated relative to their citric acid and volatile acid content.
+Some of the specific struggles during this project were very basic and some based in conflict between imagination and knowledge limitation. One basic struggle was in getting setup: I am using Windows 10 and could not get r and r studio to work in a new project sub-directory; so following the path of least resistance, I completed the work in the main directory and then copied to files to the new project directory to upload to Git. More relevant, I would imagine ways (plots) to present the variables relationships, particularly the bivariate and multivariate sections and then I could not get the code to function. This led me to initially present more basic representations. Specifically, my first review notes strongly suggested a regression line with my bivariate scatterplot analysis and the reviewer provided sample code snippet. It was then that I realized I had previously been making a minor syntax error which had led me to present the project without the regression layer. In my second set of review notes, it was suggested that I create a fucntion to avoid repetitive code and a snippet was provided. The code ran but the issue became that I lost control of my y axis when using the function. In this case, I tried several adjustments which I thought would address the problem but did not. I researched with Google trying to explain the issue and finally I posted the code and delimma in the Udacity forum. As I am writing this (to address a review note), I still do not have this 'struggle' resolved, however therein lies what I feel were my successes in the project . . . perserverance! At each step in the project, I pretty much knew that there was a method, function or library in R to accomplish the juxposition of the data that I was imaging in order to see the data relationships and or tell the stroy. And a footnote to this paragraph, a big thanks to Myles in the Udacity forum for assisting on helping solve my repetitive code issue noted above. Thus, my two objectives were to leatn some EDA and complete/pass this project; so if my third reviewer actually reads all of the project and gets to this paragraph then he/she will know what to do and I will call that Success ;) ! 
 Exploratory Data Analysis is a process. Like real life exploring the process goes one step at a time with knowledge building on itself and suggesting the next step. Another similarity is that the process leads not to conclutions (as that is not the purpose) but to insights. Finally, while there may be no definitive end to exploration, one concludes exploration 'by letting the experience or in this case, the data speak for itself'.
 
 References
